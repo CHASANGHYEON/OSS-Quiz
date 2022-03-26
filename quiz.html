@@ -4,7 +4,124 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <style>
+    body {
+  font-family: sans-serif;
+  background-color: #eeeeee;
+}
+
+.file-upload {
+  background-color: #ffffff;
+  width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.file-upload-btn {
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  background: #1FB264;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-bottom: 4px solid #15824B;
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.file-upload-btn:hover {
+  background: #1AA059;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.file-upload-btn:active {
+  border: 0;
+  transition: all .2s ease;
+}
+
+.file-upload-content {
+  display: none;
+  text-align: center;
+}
+
+.file-upload-input {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-upload-wrap {
+  margin-top: 20px;
+  border: 4px dashed #1FB264;
+  position: relative;
+}
+
+.image-dropping,
+.image-upload-wrap:hover {
+  background-color: #1FB264;
+  border: 4px dashed #ffffff;
+}
+
+.image-title-wrap {
+  padding: 0 15px 15px 15px;
+  color: #222;
+}
+
+.drag-text {
+  text-align: center;
+}
+
+.drag-text h3 {
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #15824B;
+  padding: 60px 0;
+}
+
+.file-upload-image {
+  max-height: 200px;
+  max-width: 200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.remove-image {
+  width: 200px;
+  margin: 0;
+  color: #fff;
+  background: #cd4535;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-bottom: 4px solid #b02818;
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.remove-image:hover {
+  background: #c13b2a;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.remove-image:active {
+  border: 0;
+  transition: all .2s ease;
+}
+  </style>
 </head>
 <body>
   <div>라면 분석을 위해 이미지를 넣어주세요</div>
@@ -72,6 +189,35 @@ $('.image-upload-wrap').bind('dragover', function () {
     const URL = "./my_model/";
 
     let model, webcam, labelContainer, maxPredictions;
+    const data = {
+      "삼양라면": {
+        "name": "삼양라면",
+        "calorie": "500kcal",
+        "natrium":"1780mg",
+        "carbohydrate":"79g",
+        "sugars":"5g",
+        "fat":"16g",
+        "protein":"10g",
+      },
+      "짜파게티": {
+        "name": "짜파게티",
+        "calorie": "610kcal",
+        "natrium":"1100mg",
+        "carbohydrate":"96g",
+        "sugars":"7g",
+        "fat":"20g",
+        "protein":"11g"
+      },   
+      "진라면 매운맛": {
+        "name": "진라면 매운맛",
+        "calorie": "500kcal",
+        "natrium":"1760mg",
+        "carbohydrate":"77g",
+        "sugars":"4.6g",
+        "fat":"16g",
+        "protein":"12g"
+      }
+    }
 
     // Load the image model and setup the webcam
     async function init() {
@@ -95,9 +241,11 @@ $('.image-upload-wrap').bind('dragover', function () {
         var image = document.getElementById("face-image")
         const prediction = await model.predict(image, false);
         for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+          if (prediction[i].probability.toFixed(2) === '1.00') {
+              const item = data[prediction[i].className] //삼양라면]
+              labelContainer.innerHTML = `이름: ${item.name}, 칼로리: ${item.calorie}, 나트륨: ${item.natrium}, 탄수화물: ${item.carbohydrate},
+                                          당: ${item.sugars}, 지방: ${item.fat}, 단백질: ${item.protein}`
+          }
         }
     }
 </script>
